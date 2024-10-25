@@ -426,6 +426,11 @@ pub fn write_splits<W>(w: &mut W, obj: &ObjInfo, all: bool) -> Result<()>
 where W: Write + ?Sized {
     writeln!(w, "Sections:")?;
     for (_, section) in obj.sections.iter() {
+        if section.kind == ObjSectionKind::Bss {
+            writeln!(w, "\t# size:0x{:x}", section.size)?;
+        } else {
+            writeln!(w, "\t# file_offset:0x{:x} size:0x{:x}", section.file_offset, section.size)?;
+        }
         write!(w, "\t{:<11} type:{}", section.name, section_kind_to_str(section.kind))?;
         if section.align > 0 {
             write!(w, " align:{}", section.align)?;
